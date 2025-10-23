@@ -1,6 +1,6 @@
 require_relative 'people'
 require_relative 'player'
-
+# Create Referee class inheriting from People superclass
 class Referee < People
   def initialize(name)
     @name = name
