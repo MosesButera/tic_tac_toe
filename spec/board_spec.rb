@@ -11,4 +11,16 @@ describe Board do
       expect { board.display }.to output(/.+/).to_stdout
     end
   end
+
+  describe '#place_move(spot, marker)' do
+    let(:place_move) { instance_double }
+    context 'Updates the specific spot on the board with the players marker (X or O)' do
+      it 'The updated the cell at the given spot now contains the players marker' do
+        expect(board.place_move(0, 'X'))
+      end
+      it 'it does not update the board state if an invalid/out-of-bounds spot is passed' do
+        expect(board.place_move(10, 'O'))
+      end
+    end
+  end
 end
