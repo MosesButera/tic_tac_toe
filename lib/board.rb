@@ -19,4 +19,8 @@ class Board
   def place_move(spot, marker)
     @board[spot] = marker
   end
+
+  def is_cell_empty?(spot)
+    @board[spot] == '.'
+  end
 end
