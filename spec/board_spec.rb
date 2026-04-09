@@ -20,4 +20,17 @@ describe Board do
       end
     end
   end
+
+  describe '#is_cell_empty?' do
+    context 'Expect is_cell_empty? to return true for a fresh cell and false for a cell already containing a marker' do
+      it "returns true if cell is fresh/contains '.' fresh" do
+        board.grid[0] = '.'
+        expect(board.is_cell_empty?(0)).to be true
+      end
+      it "returns false if cell contains marker 'X' or 'O'" do
+        board.place_move(0, 'X')
+        expect(board.is_cell_empty?(0)).to be false
+      end
+    end
+  end
 end
