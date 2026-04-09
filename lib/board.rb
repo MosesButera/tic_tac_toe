@@ -15,4 +15,8 @@ class Board
       puts sep
     end
   end
+
+  def place_move(spot, marker)
+    @board[spot] = marker
+  end
 end
