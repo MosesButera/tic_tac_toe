@@ -1,14 +1,9 @@
-require_relative 'people'
+require_relative 'board'
 
-class Player < People
-  def initialize(name, value)
-    @name = name
-    @value = value
-  end
+class Player
+  attr_reader :marker
 
-  def play(row, column)
-    @@rows[row][column] = @value
-    p table(@@rows)
+  def initialize(marker)
+    @marker = marker
   end
-  attr_reader :name, :value
 end
