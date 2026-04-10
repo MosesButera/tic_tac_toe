@@ -37,11 +37,11 @@ describe Board do
   describe '#is_full?' do
     context 'Expect is_empty? to return true if all nine cells are occupied and false otherwise' do
       it 'returns true if all nine cells of the board are occupied' do
-        expect(board.is_full?).not_to be_full
+        expect(board.is_full?).to be(false)
       end
       it "returns false if one or more cells of the board are empty/equal to '.'" do
         0.upto(8) { |spot| board.place_move(spot, 'X') }
-        expect(board.is_full?).to be_full
+        expect(board.is_full?).to be(true)
       end
     end
   end
