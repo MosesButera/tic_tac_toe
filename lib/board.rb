@@ -23,4 +23,8 @@ class Board
   def is_cell_empty?(spot)
     @board[spot] == '.'
   end
+
+  def is_full?
+    @board.all? { |cell| cell != '.' }
+  end
 end
