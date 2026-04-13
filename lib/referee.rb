@@ -17,4 +17,8 @@ class Referee
     end
     nil
   end
+
+  def is_draw?(board)
+    board.is_full? && check_winner(board).nil?
+  end
 end
