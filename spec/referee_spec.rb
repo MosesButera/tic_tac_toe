@@ -39,4 +39,23 @@ describe Referee do
       end
     end
   end
+
+  describe '#is_draw?(board)' do
+    context 'When its a draw' do
+      it 'returns true if board is full and there is no winner' do
+        allow(board_double).to receive(:is_full?).and_return(true)
+        allow(referee).to receive(:check_winner).with(board_double).and_return(nil)
+        expect(referee.is_draw?(board_double)).to be(true)
+      end
+    end
+
+    context 'When its not a draw' do
+      let(:winner_X_or_O) { match(/\A[XO]\z/i) }
+      it 'returns true if board is full and there is a winner' do
+        allow(board_double).to receive(:is_full?).and_return(true)
+        allow(referee).to receive(:check_winner).with(board_double).and_return(winner_X_or_O)
+        expect(referee.is_draw?(board_double)).to be(false)
+      end
+    end
+  end
 end
