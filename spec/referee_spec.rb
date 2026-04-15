@@ -4,8 +4,9 @@ require_relative '../lib/referee'
 
 describe Referee do
   subject(:referee) { described_class.new }
-  # use an instance_double to mock the board dependency
+  # Use an instance_double to mock the board dependency/
   let(:board_double) { instance_double('Board') }
+  # Simulate winning grid combination
   let(:horizontal) { ['X', 'X', 'X', '.', '.', '.', '.', '.', '.'] }
   let(:vertical) { ['X', '.', '.', 'X', '.', '.', 'X', '.', '.'] }
   let(:diagonal) { ['X', '.', '.', '.', 'X', '.', '.', '.', 'X'] }
@@ -49,7 +50,8 @@ describe Referee do
       end
     end
 
-    context 'When its not a draw' do
+    context 'When there is a winner' do
+      # initialize variable to simulate either winner X or O
       let(:winner_X_or_O) { match(/\A[XO]\z/i) }
       it 'returns true if board is full and there is a winner' do
         allow(board_double).to receive(:is_full?).and_return(true)
