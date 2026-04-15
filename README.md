@@ -1,115 +1,122 @@
-# Tic Tac Toe (ruby)
+Tic Tac Toe (Ruby)
 
-Simple Tic-Tac-Toe implemented in Ruby.  
-One-class-per-file structure in `lib/`, a small `main.rb` runner, and a `Gemfile` with development tooling (Rubocop).
+  A clean, terminal-based Tic-Tac-Toe implementation following Object-Oriented Programming (OOP) principles and Command-Query Separation (CQS).
 
----
+Quick Start
 
-## Quick start (copy / paste)
+  1. Install Dependencies:
+      bash
+      bundle install
 
-1. Install Ruby (recommended: rbenv or rvm).  
-2. From the project root run:
+  2. Run the Game:
+      bash  
+      ruby main.rb
 
-```bash
-bundle install        # installs rubocop
-ruby main.rb          # run the game script
+  3. Run Tests:
+      bash
+      bundle exec rspec
 
-If you see bundle: command not found, install Bundler: gem install bundler or use your Ruby manager docs.
+Project Summary:
 
-Project layout
+  This project solves the challenge of managing game state and win-condition logic through a decoupled architecture. Instead of a single script, responsibilities are distributed across specialized classes to ensure maintainability and testability.
 
-project-root/
-├── Gemfile
-├── Gemfile.lock
-├── README.md
-├── main.rb
-└── lib/
-    ├── people.rb
-    ├── player.rb
-    └── referee.rb
+Directory Structure:
 
-lib/people.rb — common helpers & the board printing routine and shared @@rows.
-
-lib/player.rb — Player class (inherits from People): responsible for making a move.
-
-lib/referee.rb — Referee class (inherits from People): responsible for checking the winner.
-
-main.rb — lightweight script that wires the pieces and demonstrates playing.
-
-
-What this project solves (core problem & approach)
-
-    Core problem: Represent a 3×3 Tic-Tac-Toe board and decide whether either player (X or O) has won, or the game should continue.
-
-    High-level solution (why it works):
-
-    The board is represented as a 2D array (rows), [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']].
-
-    We compute the 8 possible winning lines (3 rows, 3 columns, 2 diagonals).
-
-    To check a winner we inspect each line: if all elements are the same and not '.', the player owning that symbol wins.
-
-    We keep responsibilities separated:
-
-    Player only changes the board (encapsulation of move logic).
-
-    Referee only inspects the board and decides results.
-
-    People contains shared code for printing and board storage.
-
-    This separation follows good OOP practice (single responsibility, encapsulation, small classes).
+  .
+  ├── main.rb             # Entry point (Runner)
+  ├── lib/
+  │   ├── board.rb        # State management
+  │   ├── player.rb       # User interaction 
+  │   ├── referee.rb      # Rule enforcement 
+  │   └── game.rb         # Coordination 
+  └── spec/               # RSpec test suite (Unit Tests)
 
 
 PSEUDOCODE:
 
-START program
+  -------------------------------------------------------------------------
+  START PROGRAM
 
-SET board = 3x3 array of '.' characters
+  CLASS Board
+      METHOD initialize
+          SET grid = Array of 9 empty spaces
+      
+      METHOD display
+          CLEAR terminal screen
+          PRINT guide board (1-9)
+          PRINT current grid with separators (+---+---+)
+      
+      METHOD place_move(index, marker)
+          UPDATE grid AT index WITH marker
+      
+      METHOD is_cell_empty?(index)
+          RETURN true IF grid AT index IS empty
+      
+      METHOD is_full?
+          RETURN true IF all cells ARE NOT empty
+  END
 
-DEFINE print_table(board)
-  print top border
-  for each row in board:
-    print row formatted with vertical separators
-    print border line
-END
+  CLASS Player
+      METHOD initialize(marker)
+          SET marker = marker (X or O)
+      
+      METHOD choose_move(board)
+          LOOP
+              PROMPT user for input (1-9)
+              CONVERT input to zero-indexed integer
+              IF input is valid AND board.is_cell_empty?(input)
+                  RETURN input
+              ELSE
+                  PRINT "Invalid move, try again"
+          END LOOP
+  END
 
-CLASS Player:
-  constructor(name, symbol)
-    store name and symbol
-  method play(row, col)
-    place symbol into board[row][col]
-    print the table
+  CLASS Referee
+      METHOD check_winner(board)
+          SET win_patterns = [rows, columns, diagonals]
+          FOR EACH pattern IN win_patterns
+              IF all 3 cells in pattern ARE EQUAL and NOT empty
+                  RETURN the marker (winner)
+          RETURN nil
+      
+      METHOD is_draw?(board)
+          RETURN true IF board is_full? AND check_winner is nil
+  END
 
-CLASS Referee:
-  constructor(name)
-    store name
-  method check_winner(board)
-    compute 8 lines:
-      3 horizontal rows
-      3 vertical columns
-      2 diagonals
-    for each line:
-      if all 3 elements are the same AND not '.':
-        return "<symbol> wins"
-    return "no winner, continue playing"
+  CLASS Game
+      METHOD initialize(board, referee)
+          SET @board = board
+          SET @referee = referee
+          SET @p1 = Player('X')
+          SET @p2 = Player('O')
+          SET @current_player = @p1
+      
+      METHOD switch_player
+          IF @current_player IS @p1 THEN SET @current_player = @p2
+          ELSE SET @current_player = @p1
+      
+      METHOD start_game
+          LOOP
+              board.display
+              SET move = @current_player.choose_move(@board)
+              board.place_move(move, @current_player.marker)
+              
+              IF referee.check_winner(@board)
+                  PRINT winner marker + " wins!"
+                  BREAK
+              ELSE IF referee.is_draw?(@board)
+                  PRINT "Draw!"
+                  BREAK
+              END
+              
+              switch_player
+          END LOOP
+  END
 
-MAIN:
-  create players and referee
-  players make moves (example)
-  referee.check_winner(board)
-  print result
-END
-
-How to test manually (quick example)
-
-    Open main.rb and run it:
-
-    It should show the printed board
-
-    Then show the referee output such as X wins diagonally or Continue playing. no winner!
-
-Troubleshooting
-
-    If printing looks off on Windows, ensure your console supports ASCII and you use a compatible font.
-
-    If bundle install fails, check Ruby version and Bundler installation.
+  MAIN
+      SET board = NEW Board
+      SET referee = NEW Referee
+      SET game = NEW Game(board, referee)
+      game.start_game
+  END
+  -------------------------------------------------------------------------
